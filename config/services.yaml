@@ -4,7 +4,14 @@ parameters:
     locale: 'en'
 
 services:
-    # default configuration for services in *this* file
+    project_normalizer:
+            class: App\Serializer\ProjectNormalizer
+            public: false
+            tags: [serializer.normalizer]
+    issue_normalizer:
+             class: App\Serializer\IssueNormalizer
+             public: false
+             tags: [serializer.normalizer]
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.

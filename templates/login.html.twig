@@ -1,0 +1,50 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+{#{% if error %}
+<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+{% endif %} #}
+<div class="container-fluid" id="wrapper">
+    <div class="row">
+        <main class="col-xs-12 col-sm-8 offset-sm-8 col-lg-9 offset-lg-3 col-xl-10 offset-xl-2 pt-3 pl-4">
+    <div class="col-sm-12 col-md-9">
+    <div class="card mb-md-5">
+        <div class="card-block">
+            <h3 class="card-title">Login to Redmine</h3>
+
+            <form class="form-horizontal" action="{{ path('login') }}" method="post">
+                <fieldset>
+                    <!-- Name input-->
+                    <div class="form-group">
+                        <label class="col-12 control-label no-padding" for="name">Your name</label>
+
+                        <div class="col-md-8 no-padding">
+                            <input id="name" name="_username" type="text" placeholder="Your name" class="form-control">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-12 control-label no-padding" for="password">Your password</label>
+
+                        <div class="col-md-8 no-padding">
+                            <input id="password" name="_password" type="password" placeholder="Your password" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- Form actions -->
+                    <div class="form-group">
+                        <div class="col-12 widget-right no-padding">
+                            <button type="submit" class="btn btn-primary btn-md float-left">Submit</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+        </main>
+    </div>
+</div>
+{% endblock %}
