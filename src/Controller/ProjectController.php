@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Project;
 use App\Service\TimeTrackManager;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\ApiRequestManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -15,23 +16,31 @@ class ProjectController extends Controller
     /**
      * @param ApiRequestManager $apiRequestManager
      * @param SerializerInterface $serializer
+     * @param Request $request
      * @Route("/projects", name="projects")
      * @return Response
      */
-    public function getAll(ApiRequestManager $apiRequestManager, SerializerInterface $serializer)
+    public function getAll(ApiRequestManager $apiRequestManager, SerializerInterface $serializer, Request $request)
     {
-        $request = $apiRequestManager->requestApi('projects.json');
+        $requestApi = $apiRequestManager->requestApi('projects.json');
 
-        if (!$request) {
+        if (!$requestApi) {
             throw $this->createNotFoundException(
                 'No projects found' );
         }
 
        $projects = $serializer->deserialize(
-            $request,
+            $requestApi,
             Project::class,
             'json',
            []
+        );
+
+        $paginator  = $this->get('knp_paginator');
+        $projects = $paginator->paginate(
+            $projects,
+            $request->query->getInt('page', 1),
+            2
         );
 
         return $this->render('list_projects.html.twig', array(
@@ -67,7 +76,7 @@ class ProjectController extends Controller
         $spentTime = $timeTrackManager->spentTime($marker, $id);
 
         return $this->render('project.html.twig', array(
-            'project' => $project, 'spent_time' => $spentTime
+            'project' => $project, 'spent_time' => $spentTime,
         ));
 
     }

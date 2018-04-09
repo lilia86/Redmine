@@ -23,12 +23,6 @@ class ProjectNormalizer extends ObjectNormalizer
         if (!$this->serializer instanceof DenormalizerInterface) {
             throw new LogicException('Cannot normalize attributes because injected serializer is not a normalizer');
         }
-
-
-
-
-       /*    $projects = $this->denormalize($data, 'Project', null); */
-
           if (array_key_exists('projects', $data)) {
                foreach($data['projects'] as $item) {
 
@@ -40,14 +34,16 @@ class ProjectNormalizer extends ObjectNormalizer
                    $project->setCreatedOn($item['created_on']);
                    $projects[] = $project;
             }
+               $projects = array_reverse($projects, true);
+        }else{
 
-               }else{
                    $projects = new Project();
                    $projects->setId($data['project']['id']);
                    $projects->setName($data['project']['name']);
                    $projects->setIdentifier($data['project']['identifier']);
                    $projects->setIdentifier($data['project']['description']);
         }
+
 
         return $projects;
     }

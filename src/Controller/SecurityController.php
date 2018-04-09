@@ -58,6 +58,8 @@ class SecurityController extends Controller
             []
         );
 
+
+
         $comments = $this->getDoctrine()
             ->getRepository(Comment::class)
             ->getAll(3);

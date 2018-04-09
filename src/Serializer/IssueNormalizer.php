@@ -37,6 +37,7 @@ class IssueNormalizer extends ObjectNormalizer
                 $issue->setSubject($item['subject']);
                 $issues[] = $issue;
             }
+            $issues = array_reverse($issues, true);
 
         }else{
             $issues = new Issue();
@@ -48,6 +49,7 @@ class IssueNormalizer extends ObjectNormalizer
             $issues->setDescription($data['issue']['description']);
             $issues->setSpentHours($data['issue']['spent_hours']);
         }
+
 
         return $issues;
     }

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Issue;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\ApiRequestManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -15,23 +16,32 @@ class IssueController extends Controller
      * @param ApiRequestManager $apiRequestManager
      * @param SerializerInterface $serializer
      * @param integer $id
+     * @param Request $request
      * @Route("/project_issues/{id}", name="project_issues")
      * @return Response
      */
-    public function getProjectIssues(ApiRequestManager $apiRequestManager, SerializerInterface $serializer, $id)
+    public function getProjectIssues(ApiRequestManager $apiRequestManager, SerializerInterface $serializer, Request $request, $id)
     {
         $marker = 'project_id';
-        $request = $apiRequestManager->requestApi('issues.json', $marker, $id );
+        $requestApi = $apiRequestManager->requestApi('issues.json', $marker, $id );
 
-        if (!$request) {
+        if (!$requestApi) {
             throw $this->createNotFoundException(
                 'No issues found' );
         }
         $issues = $serializer->deserialize(
-            $request,
+            $requestApi,
             Issue::class,
             'json',
             []
+        );
+
+
+        $paginator  = $this->get('knp_paginator');
+        $issues = $paginator->paginate(
+            $issues,
+            $request->query->getInt('page', 1),
+            5
         );
         return $this->render('list_issues.html.twig', array(
             'issues' => $issues,

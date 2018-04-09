@@ -23,6 +23,7 @@ class CommentRepository extends ServiceEntityRepository
     public function findByProjectId($id)
     {
         return $this->createQueryBuilder('c')
+            ->orderBy('c.id', 'DESC')
             ->andWhere('c.project = :val')
             ->setParameter('val', $id)
             ->getQuery()

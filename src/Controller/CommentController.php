@@ -15,20 +15,28 @@ class CommentController extends Controller
 {
     /**
      * @param integer $id
+     * @param Request $request
      * @Route("/projects/comment_show/{id}", name="project_comments", requirements={"id"="\d+"})
      * @return Response
      */
-    public function getProjectComments($id)
+    public function getProjectComments(Request $request, $id)
     {
         $comments = $this->getDoctrine()
             ->getRepository(Comment::class)
-            ->findByProject($id);
+            ->findByProjectId($id);
 
         if (!$comments) {
             throw $this->createNotFoundException(
                 'No comments found '
             );
         }
+
+        $paginator  = $this->get('knp_paginator');
+        $comments = $paginator->paginate(
+            $comments,
+            $request->query->getInt('page', 1),
+            2
+        );
 
         return $this->render('list_comments.html.twig', array(
             'comments' => $comments,

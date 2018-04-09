@@ -5,42 +5,50 @@ namespace App\Entity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
+
 class Project
 {
     /**
      *
      * @Assert\NotBlank()
      * @Assert\Type("int")
+     *
      */
     private $id;
 
     /**
      * @Assert\Type("string")
+     *
      */
     private $name;
 
     /**
      * @Assert\Type("string")
+     *
      */
     private $identifier;
 
     /**
      * @Assert\Type("string")
+     *
      */
     private $description;
 
     /**
      * @Assert\Type("int")
+     *
      */
     private $status;
 
     /**
      * @Assert\Date()
+     *
      */
     private $created_on;
 
     /**
      * @Assert\Date()
+     *
      */
     private $updated_on;
 
