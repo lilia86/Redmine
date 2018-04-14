@@ -22,23 +22,16 @@ class ProjectController extends Controller
      */
     public function getAll(ApiRequestManager $apiRequestManager, SerializerInterface $serializer, Request $request)
     {
-        $requestApi = $apiRequestManager->requestApi('projects.json');
+        $requestApi = $apiRequestManager->requestApi('projects.json', Project::class);
 
         if (!$requestApi) {
             throw $this->createNotFoundException(
                 'No projects found' );
         }
 
-       $projects = $serializer->deserialize(
-            $requestApi,
-            Project::class,
-            'json',
-           []
-        );
-
         $paginator  = $this->get('knp_paginator');
         $projects = $paginator->paginate(
-            $projects,
+            $requestApi,
             $request->query->getInt('page', 1),
             2
         );
@@ -60,23 +53,18 @@ class ProjectController extends Controller
     public function getProjectById(ApiRequestManager $apiRequestManager,  SerializerInterface $serializer,
                                    TimeTrackManager $timeTrackManager, $id)
     {
-        $request = $apiRequestManager->requestApi('projects/' . $id . '.json');
+        $request = $apiRequestManager->requestApi('projects/' . $id . '.json', Project::class);
 
         if (!$request) {
             throw $this->createNotFoundException(
                 'No projects found');
         }
-        $project = $serializer->deserialize(
-            $request,
-            Project::class,
-            'json'
-        );
 
         $marker = 'project_id';
-        $spentTime = $timeTrackManager->spentTime($marker, $id);
+        $spentTime = $timeTrackManager->spentTime(Project::class, $marker, $id);
 
         return $this->render('project.html.twig', array(
-            'project' => $project, 'spent_time' => $spentTime,
+            'project' => $request, 'spent_time' => $spentTime,
         ));
 
     }

@@ -23,23 +23,16 @@ class IssueController extends Controller
     public function getProjectIssues(ApiRequestManager $apiRequestManager, SerializerInterface $serializer, Request $request, $id)
     {
         $marker = 'project_id';
-        $requestApi = $apiRequestManager->requestApi('issues.json', $marker, $id );
+        $requestApi = $apiRequestManager->requestApi('issues.json', Issue::class, $marker, $id);
 
         if (!$requestApi) {
             throw $this->createNotFoundException(
                 'No issues found' );
         }
-        $issues = $serializer->deserialize(
-            $requestApi,
-            Issue::class,
-            'json',
-            []
-        );
-
 
         $paginator  = $this->get('knp_paginator');
         $issues = $paginator->paginate(
-            $issues,
+            $requestApi,
             $request->query->getInt('page', 1),
             5
         );
@@ -60,21 +53,15 @@ class IssueController extends Controller
                                  $id)
     {
 
-        $request = $apiRequestManager->requestApi('issues/'.$id.'.json');
+        $request = $apiRequestManager->requestApi('issues/'.$id.'.json', Issue::class);
 
         if (!$request) {
             throw $this->createNotFoundException(
                 'No issues found');
         }
-        $issue = $serializer->deserialize(
-            $request,
-            Issue::class,
-            'json',
-            []
-        );
 
         return $this->render('issue.html.twig', array(
-            'issue' => $issue,
+            'issue' => $request,
         ));
 
     }

@@ -16,21 +16,19 @@ class TimeTrackManager
         $this->apiRequestManager = $apiRequestManager;
     }
 
-    public function spentTime($marker, $id)
+    public function spentTime($objectClass, $marker, $id)
     {
-        $request = $this->apiRequestManager->requestApi('time_entries.json', $marker, $id);
+        $request = $this->apiRequestManager->requestApi('time_entries.json', null, $marker, $id);
         $array = json_decode($request, true);
         $spentTime = 0;
-        if($array['total_count'] > 25) {
-            $quantity = $array['total_count'] / 25;
-            $quantity = (int)$quantity;
-            for ($i = 0; $i <= $quantity; $i++) {
-                $offset = $i*25;
-                $request = $this->apiRequestManager->requestApi('time_entries.json', $marker, $id, 25, $offset);
-                $allEntries = json_decode($request, true);
-                foreach ($allEntries['time_entries'] as $item){
+        $quantity = $array['total_count'] / 25;
+        $quantity = (int)$quantity;
+        for ($i = 0; $i <= $quantity; $i++) {
+            $offset = $i*25;
+            $request = $this->apiRequestManager->requestApi('time_entries.json', null, $marker, $id, 25, $offset);
+            $allEntries = json_decode($request, true);
+            foreach ($allEntries['time_entries'] as $item){
                     $spentTime += $item['hours'];
-                }
             }
         }
 

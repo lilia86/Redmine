@@ -22,7 +22,7 @@ class SecurityController extends Controller
      * @Route("/login", name="login")
      * @return Response
      */
-    public function login(Request $request, AuthenticationUtils $authenticationUtils)
+    public function login(AuthenticationUtils $authenticationUtils)
     {
 
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -44,28 +44,19 @@ class SecurityController extends Controller
      */
     public function getAll(ApiRequestManager $apiRequestManager, SerializerInterface $serializer)
     {
-        $request = $apiRequestManager->requestApi('projects.json', null, null, 5);
+        $request = $apiRequestManager->requestApi('projects.json', Project::class,null, null, 5);
 
         if (!$request) {
             throw $this->createNotFoundException(
                 'No projects found' );
         }
 
-        $projects = $serializer->deserialize(
-            $request,
-            Project::class,
-            'json',
-            []
-        );
-
-
-
         $comments = $this->getDoctrine()
             ->getRepository(Comment::class)
             ->getAll(3);
 
         return $this->render('index.html.twig', array(
-            'projects' => $projects, 'comments' => $comments
+            'projects' => $request, 'comments' => $comments
         ));
     }
 
